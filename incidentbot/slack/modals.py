@@ -181,7 +181,9 @@ def handle_submission(ack, body, client):
     ack()
     parsed = parse_modal_values(body)
     user = body.get("user").get("id")
-
+    components = parsed.get("incident.declare_incident_modal.set_components")
+    if isinstance(components, list):
+        components = " , ".join(components)
     # Create request parameters object
     try:
         incident = Incident(
@@ -189,9 +191,7 @@ def handle_submission(ack, body, client):
                 additional_comms_channel=parsed.get(
                     "incident.declare_incident_modal.set_additional_comms_channel"
                 ),
-                incident_components=parsed.get(
-                    "incident.declare_incident_modal.set_components"
-                ),
+                incident_components=components,  # converted components to string
                 incident_description=parsed.get(
                     "incident.declare_incident_modal.set_description"
                 ),
