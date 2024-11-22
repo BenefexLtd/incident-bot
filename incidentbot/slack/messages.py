@@ -465,7 +465,7 @@ class BlockBuilder:
             blocks.append(set_private_security_true)
         else:
             blocks.append(security_default)
-            blocks.append(set_private_default)
+            # blocks.append(set_private_default)
 
         """
         If there are teams that will be auto paged, mention that
