@@ -37,47 +37,47 @@ services:
       - ./config.yaml:/app/config.yaml
     networks:
       - inc_bot_network
-  bot:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      db:
-        condition: service_healthy
-      migrations:
-        condition: service_completed_successfully
-    environment:
-      SLACK_APP_TOKEN: ''
-      SLACK_BOT_TOKEN: ''
-      SLACK_USER_TOKEN: ''
-      POSTGRES_HOST: db
-      POSTGRES_DB: incident_bot
-      POSTGRES_USER: incident_bot
-      POSTGRES_PASSWORD: somepassword
-      POSTGRES_PORT: 5432
-      # PAGERDUTY_API_TOKEN: ''
-      # PAGERDUTY_API_USERNAME: ''
-      # STATUSPAGE_API_KEY: ''
-      # STATUSPAGE_PAGE_ID: ''
-      # STATUSPAGE_URL: ''
-      # ATLASSIAN_API_URL: ''
-      # ATLASSIAN_API_USERNAME: ''
-      # ATLASSIAN_API_TOKEN: ''
-      # ATLASSIAN_OPSGENIE_API_KEY: ''
-      # ATLASSIAN_OPSGENIE_API_TEAM_INTEGRATION_KEY: ''
-      # ZOOM_ACCOUNT_ID: ''
-      # ZOOM_CLIENT_ID: ''
-      # ZOOM_CLIENT_SECRET: ''
-    ports:
-      - target: 3000
-        published: 3000
-        protocol: tcp
-        mode: host
-    volumes:
-      # Wherever the config file lives, root by default
-      - ./config.yaml:/app/config.yaml
-    networks:
-      - inc_bot_network
+  # bot:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #     migrations:
+  #       condition: service_completed_successfully
+  #   environment:
+  #     SLACK_APP_TOKEN: ''
+  #     SLACK_BOT_TOKEN: ''
+  #     SLACK_USER_TOKEN: ''
+  #     POSTGRES_HOST: db
+  #     POSTGRES_DB: incident_bot
+  #     POSTGRES_USER: incident_bot
+  #     POSTGRES_PASSWORD: somepassword
+  #     POSTGRES_PORT: 5432
+  #     # PAGERDUTY_API_TOKEN: ''
+  #     # PAGERDUTY_API_USERNAME: ''
+  #     # STATUSPAGE_API_KEY: ''
+  #     # STATUSPAGE_PAGE_ID: ''
+  #     # STATUSPAGE_URL: ''
+  #     # ATLASSIAN_API_URL: ''
+  #     # ATLASSIAN_API_USERNAME: ''
+  #     # ATLASSIAN_API_TOKEN: ''
+  #     # ATLASSIAN_OPSGENIE_API_KEY: ''
+  #     # ATLASSIAN_OPSGENIE_API_TEAM_INTEGRATION_KEY: ''
+  #     # ZOOM_ACCOUNT_ID: ''
+  #     # ZOOM_CLIENT_ID: ''
+  #     # ZOOM_CLIENT_SECRET: ''
+  #   ports:
+  #     - target: 3000
+  #       published: 3000
+  #       protocol: tcp
+  #       mode: host
+  #   volumes:
+  #     # Wherever the config file lives, root by default
+  #     - ./config.yaml:/app/config.yaml
+  #   networks:
+  #     - inc_bot_network
 networks:
   inc_bot_network:
     driver: bridge
