@@ -341,6 +341,7 @@ class BlockBuilder:
                 "text": ":lock: *Security incident channels will be created as private channels.*",
             },
         }
+        components = settings.components or []
 
         blocks = [
             {
@@ -359,20 +360,6 @@ class BlockBuilder:
             },
             {
                 "type": "input",
-                "block_id": "incident.declare_incident_modal.set_components",
-                "element": {
-                    "type": "plain_text_input",
-                    "action_id": "incident.declare_incident_modal.set_components",
-                    "placeholder": {
-                        "type": "plain_text",
-                        "text": "Components impacted by the problem. (comma-separated)",
-                    },
-                    "max_length": 60,
-                },
-                "label": {"type": "plain_text", "text": "Components"},
-            },
-            {
-                "type": "input",
                 "block_id": "incident.declare_incident_modal.set_impact",
                 "element": {
                     "type": "plain_text_input",
@@ -386,6 +373,41 @@ class BlockBuilder:
                     "min_length": 0,
                 },
                 "label": {"type": "plain_text", "text": "Impact"},
+            },
+            {
+                "block_id": "incident.declare_incident_modal.set_components",
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Components*"
+                },
+                "accessory": {
+                    "type": "multi_static_select",
+                    "action_id": "incident.declare_incident_modal.set_components",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "text": "Select a component...",
+                        "emoji": True
+                    },
+                    # "initial_option": {
+                    #     "text": {
+                    #         "type": "plain_text",
+                    #         "text": components[0]
+                    #     },
+                    #     "value": components[0]
+                    # } if components else None,
+                    "options": [
+                        {
+                            "text": {
+                                "type": "plain_text",
+                                "text": component,
+                                "emoji": True
+                            },
+                            "value": component
+                        }
+                        for component in components
+                    ]
+                }
             },
             {
                 "block_id": "incident.declare_incident_modal.set_severity",
@@ -419,45 +441,45 @@ class BlockBuilder:
                     ],
                 },
             },
-            {
-                "type": "section",
-                "block_id": "incident.declare_incident_modal.set_additional_comms_channel",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Create additional comms channel?*",
-                },
-                "accessory": {
-                    "action_id": "incident.declare_incident_modal.set_additional_comms_channel",
-                    "type": "static_select",
-                    "placeholder": {
-                        "type": "plain_text",
-                        "text": "Select...",
-                    },
-                    "initial_option": {
-                        "text": {
-                            "type": "plain_text",
-                            "text": "No",
-                        },
-                        "value": "false",
-                    },
-                    "options": [
-                        {
-                            "text": {
-                                "type": "plain_text",
-                                "text": "Yes",
-                            },
-                            "value": "true",
-                        },
-                        {
-                            "text": {
-                                "type": "plain_text",
-                                "text": "No",
-                            },
-                            "value": "false",
-                        },
-                    ],
-                },
-            },
+            # {
+            #     "type": "section",
+            #     "block_id": "incident.declare_incident_modal.set_additional_comms_channel",
+            #     "text": {
+            #         "type": "mrkdwn",
+            #         "text": "*Create additional comms channel?*",
+            #     },
+            #     "accessory": {
+            #         "action_id": "incident.declare_incident_modal.set_additional_comms_channel",
+            #         "type": "static_select",
+            #         "placeholder": {
+            #             "type": "plain_text",
+            #             "text": "Select...",
+            #         },
+            #         "initial_option": {
+            #             "text": {
+            #                 "type": "plain_text",
+            #                 "text": "No",
+            #             },
+            #             "value": "false",
+            #         },
+            #         "options": [
+            #             {
+            #                 "text": {
+            #                     "type": "plain_text",
+            #                     "text": "Yes",
+            #                 },
+            #                 "value": "true",
+            #             },
+            #             {
+            #                 "text": {
+            #                     "type": "plain_text",
+            #                     "text": "No",
+            #                 },
+            #                 "value": "false",
+            #             },
+            #         ],
+            #     },
+            # },
         ]
 
         if security_selected:
@@ -465,7 +487,7 @@ class BlockBuilder:
             blocks.append(set_private_security_true)
         else:
             blocks.append(security_default)
-            blocks.append(set_private_default)
+            # blocks.append(set_private_default)
 
         """
         If there are teams that will be auto paged, mention that
