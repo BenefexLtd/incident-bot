@@ -321,11 +321,15 @@ automations: []
     #   issue_types: [Bug, Task, Incident]
     #   labels: [incident]           # optional labels applied to created issues
     #   priorities: [High, Medium, Low]  # optional; surfaced in the Jira modal
-    #   status_mapping:              # maps incident statuses → Jira statuses
-    #     - investigating: In Progress
-    #     - identified: In Progress
-    #     - monitoring: In Review
-    #     - resolved: Done
+    #   status_mapping:              # maps incident statuses → Jira status names
+    #     - incident_status: investigating
+    #       jira_status: In Progress
+    #     - incident_status: identified
+    #       jira_status: In Progress
+    #     - incident_status: monitoring
+    #       jira_status: In Review
+    #     - incident_status: resolved
+    #       jira_status: Done
 
     # Statuspage (Atlassian) — manage a status page from incident channels
     # Requires env vars: STATUSPAGE_API_KEY, STATUSPAGE_PAGE_ID
