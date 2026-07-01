@@ -499,11 +499,40 @@ class Incident:
                 from incidentbot.models.database import JiraIssueRecord
 
                 try:
+                    # The IM ticket acts as the single hub for the incident, so
+                    # give it a useful body linking back to the Slack channel
+                    # and summarising the incident context.
+                    summary = record.description or record.channel_name
+                    description_lines = [
+                        record.description or "An incident has been declared.",
+                        "",
+                        f"Incident channel: {record.channel_name}",
+                    ]
+                    if record.link:
+                        description_lines.append(f"Slack channel: {record.link}")
+                    if record.severity:
+                        description_lines.append(
+                            f"Severity: {record.severity.upper()}"
+                        )
+                    if record.status:
+                        description_lines.append(f"Status: {record.status}")
+                    if record.meeting_link:
+                        description_lines.append(
+                            f"Meeting: {record.meeting_link}"
+                        )
+
+                    # Fall back to the first configured issue type if an explicit
+                    # auto-create type has not been set.
+                    issue_type = (
+                        settings.integrations.atlassian.jira.auto_create_issue_type
+                        or settings.integrations.atlassian.jira.issue_types[0]
+                    )
+
                     issue_obj = JiraIssue(
-                        description=record.channel_name,
+                        description="\n".join(description_lines),
                         incident_id=record.id,
-                        issue_type=settings.integrations.atlassian.jira.auto_create_issue_type,
-                        summary=record.description,
+                        issue_type=issue_type,
+                        summary=summary,
                     )
                     resp = issue_obj.new()
 
@@ -521,8 +550,8 @@ class Incident:
                             event_id = adapter.post_jira_issue(
                                 room_id=record.channel_id,
                                 key=resp.get("key"),
-                                summary=record.description,
-                                issue_type=settings.integrations.atlassian.jira.auto_create_issue_type,
+                                summary=summary,
+                                issue_type=issue_type,
                                 link=issue_link,
                             )
                             if event_id:

@@ -96,6 +96,29 @@ incidentbot:
             parent: Incident Postmortems
             space: OneHub
             template_id: 1533083725
+          # Jira — auto-create an incident ticket in the IM project on open.
+          # Acts as the single hub to link any related issues to. Reuses the
+          # ATLASSIAN_API_URL/USERNAME/TOKEN secrets already used by Confluence.
+          jira:
+            enabled: true
+            auto_create_issue: true
+            auto_create_issue_type: Incident
+            project: IM
+            issue_types:
+              - Incident
+            labels:
+              - incident
+            # Maps incident-bot statuses to IM workflow status names so the
+            # ticket transitions as the incident progresses.
+            status_mapping:
+              - incident_status: investigating
+                jira_status: Investigating
+              - incident_status: identified
+                jira_status: Identified
+              - incident_status: monitoring
+                jira_status: Monitoring
+              - incident_status: resolved
+                jira_status: Resolved
           statuspage:
             enabled: true
             url: https://status.onehub.global/
