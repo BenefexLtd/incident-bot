@@ -137,6 +137,13 @@ class ConfluenceIntegration(BaseModel):
 class JiraIntegration(BaseModel):
     auto_create_issue: bool = False
     auto_create_issue_type: str | None = None
+    # Extra (often required) fields to set on created issues, e.g. custom
+    # fields specific to a project's create screen. Each entry:
+    #   id:        the field id (e.g. "customfield_10302")
+    #   type:      option | user | number | array_option | string (default)
+    #   value:     value, may contain tokens like "{slack_url}" / "{severity}"
+    #   value_map: optional dict mapping the resolved value -> final value
+    custom_fields: list[dict[str, Any]] | None = None
     enabled: bool = False
     issue_types: list[str]
     labels: list[str] | None = None

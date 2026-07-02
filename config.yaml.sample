@@ -321,6 +321,19 @@ automations: []
     #   issue_types: [Bug, Task, Incident]
     #   labels: [incident]           # optional labels applied to created issues
     #   priorities: [High, Medium, Low]  # optional; surfaced in the Jira modal
+    #   custom_fields:               # optional; set extra/required fields on created issues
+    #     # Values support tokens: {slack_url} {channel_name} {slug}
+    #     # {incident_id} {severity} {summary} {status}
+    #     - id: customfield_10302    # a free-text field
+    #       type: string            # option | user | number | array_option | string (default)
+    #       value: "{slack_url}"
+    #     - id: customfield_10279    # a select/option field
+    #       type: option
+    #       value: "{severity}"
+    #       value_map:               # remap the resolved value -> the Jira option value
+    #         sev1: Sev-1
+    #         sev2: Sev-2
+    #         sev3: Sev-3
     #   status_mapping:              # maps incident statuses → Jira status names
     #     - incident_status: investigating
     #       jira_status: In Progress

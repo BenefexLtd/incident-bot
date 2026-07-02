@@ -108,6 +108,23 @@ incidentbot:
               - Incident
             labels:
               - incident
+            # Required custom fields on the IM "Incident" create screen.
+            # Values support tokens: {slack_url} {channel_name} {slug}
+            # {incident_id} {severity} {summary} {status}.
+            custom_fields:
+              - id: customfield_10302   # Slack
+                type: string
+                value: "{slack_url}"
+              - id: customfield_17841   # Incident Bot Ref
+                type: string
+                value: "{slug}"
+              - id: customfield_10279   # Severity
+                type: option
+                value: "{severity}"
+                value_map:
+                  sev1: Sev-1
+                  sev2: Sev-2
+                  sev3: Sev-3
             # Maps incident-bot statuses to IM workflow status names so the
             # ticket transitions as the incident progresses.
             status_mapping:
