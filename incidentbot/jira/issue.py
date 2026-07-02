@@ -13,6 +13,7 @@ class JiraIssue:
         incident_id: int,
         issue_type: str,
         summary: str,
+        fields: dict | None = None,
     ):
         self.jira = JiraApi()
         self.incident_id = incident_id
@@ -22,10 +23,13 @@ class JiraIssue:
 
         self.description = description
         self.issue_type = issue_type
-        self.labels = settings.integrations.atlassian.jira.labels + [
+        self.labels = (settings.integrations.atlassian.jira.labels or []) + [
             self.incident_data.channel_name
         ]
         self.summary = summary
+        # Additional fields (e.g. project-specific required custom fields)
+        # merged into the create payload.
+        self.fields = fields or {}
 
     def new(self):
         """
@@ -40,6 +44,7 @@ class JiraIssue:
                     "labels": self.labels,
                     "project": {"id": self.jira.project_id},
                     "summary": self.summary,
+                    **self.fields,
                 }
             )
 

@@ -528,11 +528,58 @@ class Incident:
                         or settings.integrations.atlassian.jira.issue_types[0]
                     )
 
+                    # Build any project-specific fields (e.g. required custom
+                    # fields on the create screen) from config. Values may
+                    # reference the tokens below and be remapped via value_map.
+                    tokens = {
+                        "slack_url": record.link or "",
+                        "channel_name": record.channel_name or "",
+                        "slug": record.slug or "",
+                        "incident_id": str(record.id),
+                        "severity": record.severity or "",
+                        "summary": summary,
+                        "status": record.status or "",
+                    }
+                    extra_fields = {}
+                    for cf in (
+                        settings.integrations.atlassian.jira.custom_fields or []
+                    ):
+                        field_id = cf.get("id")
+                        if not field_id:
+                            continue
+
+                        value = cf.get("value", "")
+                        if isinstance(value, str):
+                            try:
+                                value = value.format(**tokens)
+                            except (KeyError, IndexError, ValueError):
+                                pass
+
+                        value_map = cf.get("value_map")
+                        if value_map:
+                            value = value_map.get(value, value)
+
+                        field_type = cf.get("type", "string")
+                        if field_type == "option":
+                            extra_fields[field_id] = {"value": value}
+                        elif field_type == "array_option":
+                            extra_fields[field_id] = [{"value": value}]
+                        elif field_type == "user":
+                            extra_fields[field_id] = {"id": value}
+                        elif field_type == "number":
+                            try:
+                                extra_fields[field_id] = float(value)
+                            except (TypeError, ValueError):
+                                continue
+                        else:
+                            extra_fields[field_id] = value
+
                     issue_obj = JiraIssue(
                         description="\n".join(description_lines),
                         incident_id=record.id,
                         issue_type=issue_type,
                         summary=summary,
+                        fields=extra_fields,
                     )
                     resp = issue_obj.new()
 
